@@ -55,15 +55,8 @@ button{
   cursor:pointer;
 }
 
-.yes{
-  background:#0b5ed7;
-  color:white;
-}
-
-.no{
-  background:#ccc;
-  position:absolute;
-}
+.yes{background:#0b5ed7;color:white;}
+.no{background:#ccc;position:absolute;}
 
 input{
   width:80%;
@@ -74,11 +67,7 @@ input{
   text-align:center;
 }
 
-.error{
-  color:#d6336c;
-  margin-top:10px;
-  font-weight:600;
-}
+.error{color:#d6336c;margin-top:10px;font-weight:600;}
 
 .letter{
   font-style:italic;
@@ -88,24 +77,26 @@ input{
 }
 
 /* Scratch card */
-.scratch-container {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  margin: auto;
+.scratch-container{
+  position:relative;
+  width:300px;
+  height:300px;
+  margin:auto;
 }
 
-.scratch-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+.scratch-container img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  border-radius:10px;
 }
 
-#scratch {
-  position: absolute;
-  top: 0;
-  left: 0;
+#scratch{
+  position:absolute;
+  top:0;
+  left:0;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -115,7 +106,7 @@ input{
 <!-- HEARTS -->
 <script>
 for(let i=0;i<25;i++){
-  let h=document.createElement("div");
+  const h=document.createElement("div");
   h.className="heart";
   h.innerHTML="💗";
   h.style.left=Math.random()*100+"vw";
@@ -127,27 +118,26 @@ for(let i=0;i<25;i++){
 
 <!-- PAGE 1 -->
 <div class="card" id="page1">
-  <h2>Dharshan, will you be my valentine ? 💖</h2><br><br>
+  <h2>Dharshan, will you be my Valentine ? 💖</h2><br><br>
   <button class="yes" onclick="openScratch()">Yes</button>
   <button class="no" id="noBtn">No</button>
-  <p style="margin-top:60px;color:#555;">Don't waste your time to follow the No 😜</p>
+  <p style="margin-top:60px;color:#555;">Don't waste your time clicking No 😜</p>
 </div>
 
 <!-- PAGE 2 : SCRATCH -->
 <div class="card hidden" id="pageScratch">
-  <h2>💚🩷🩵💙Scratch to reveal💚🩷🩵💙</h2>
-<div class="scratch-container">
-  <img src="DSfam.png" id="hiddenImage">
-  <canvas id="scratch"></canvas>
-</div>
-
+  <h2>💚🩷🩵💙 Scratch to reveal 💚🩷🩵💙</h2>
+  <div class="scratch-container">
+    <img src="DSfam.png" id="hiddenImage">
+    <canvas id="scratch"></canvas>
+  </div><br>
   <button class="yes hidden" id="continueBtn" onclick="openTyping()">Continue 💕</button>
 </div>
 
 <!-- PAGE 3 -->
 <div class="card hidden" id="page2">
   <h2>Hey handsome ❤️</h2>
-  <p>Type <b>i love you di pondati..</b> to unlock my surprise love letter</p>
+  <p>Type <b>i love you pondatti</b> to unlock my surprise 💌</p>
   <input type="text" id="loveInput">
   <br><br>
   <button class="yes" onclick="checkText()">Submit 💕</button>
@@ -161,7 +151,7 @@ for(let i=0;i<25;i++){
 </div>
 
 <script>
-/* No button */
+/* No button movement */
 const noBtn=document.getElementById("noBtn");
 noBtn.addEventListener("mouseover",moveNo);
 noBtn.addEventListener("touchstart",moveNo);
@@ -186,16 +176,20 @@ function openTyping(){
 /* Scratch logic */
 const canvas=document.getElementById("scratch");
 const ctx=canvas.getContext("2d");
+const img=document.getElementById("hiddenImage");
+let scratching=false;
 
 function initScratch(){
-  canvas.width=250;
-  canvas.height=250;
-  ctx.fillStyle="#999";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.globalCompositeOperation="destination-out";
+  img.onload=()=>{
+    canvas.width=img.offsetWidth;
+    canvas.height=img.offsetHeight;
+
+    ctx.globalCompositeOperation="source-over";
+    ctx.fillStyle="#4a90e2";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+  };
 }
 
-let scratching=false;
 canvas.addEventListener("mousedown",()=>scratching=true);
 canvas.addEventListener("mouseup",()=>scratching=false);
 canvas.addEventListener("mousemove",scratch);
@@ -206,33 +200,33 @@ canvas.addEventListener("touchmove",scratch);
 
 function scratch(e){
   if(!scratching) return;
-  const rect=canvas.getBoundingClientRect();
-  const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
-  const y=(e.touches?e.touches[0].clientY:e.clientY)-rect.top;
+  const r=canvas.getBoundingClientRect();
+  const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+  const y=(e.touches?e.touches[0].clientY:e.clientY)-r.top;
+  ctx.globalCompositeOperation="destination-out";
   ctx.beginPath();
-  ctx.arc(x,y,15,0,Math.PI*2);
+  ctx.arc(x,y,18,0,Math.PI*2);
   ctx.fill();
-  document.getElementById("continueBtn").classList.remove("hidden");
+  continueBtn.classList.remove("hidden");
 }
 
-/* Typing check */
-const letterContent=`My love, you’ve been my everything since the day we met.\
-and I fall in love with you again and again.
-I wish to live my rest of the life with you Thangamey...
+/* Love letter */
+const letterContent=My love, you’ve been my everything since the day we met.
+I fall in love with you again and again.
+I wish to live my rest of the life with you Thangamey...💚
 Lets shine and grow together.
-Dharsh, You are the meaning of my life.
+Dharsh, You are the meaning of my life. 
 This is our first valentines day.... i am sooo exceited..hehehe😍🤩😍🤩
-i love you dharsh...🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂
-Dharshan....ummmhhhhhaaaaaa💋💋💋💋💋💋💋💋💋💋💋💋
-
-You are my forever,
-my love,
-my Dharshan 💚💗💙`;
-
-let index=0;
+i love you dharsh...🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂🫂 
+Dharshan....ummmhhhhhaaaaaa💋💋💋💋💋💋💋💋💋💋💋💋 
+You are my forever, 
+  
+my love, 
+my Dharshan 💚💗💙;
+let idx=0;
 function typeLetter(){
-  if(index < letterContent.length){
-    letterText.innerHTML += letterContent.charAt(index++);
+  if(idx < letterContent.length){
+    letterText.innerHTML += letterContent[idx++];
     setTimeout(typeLetter,40);
   }
 }
@@ -246,17 +240,6 @@ function checkText(){
     error.innerText="😜 Nope! Type it properly baby!";
   }
 }
- const canvas = document.getElementById("scratch");
-const ctx = canvas.getContext("2d");
-const img = document.getElementById("hiddenImage");
-
-img.onload = () => {
-  canvas.width = img.offsetWidth;
-  canvas.height = img.offsetHeight;
-
-  ctx.fillStyle = "#4a90e2"; // blue scratch layer
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-}; 
 </script>
 
 </body>
