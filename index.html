@@ -88,24 +88,24 @@ input{
 }
 
 /* Scratch card */
-.scratch-container{
-  position:relative;
-  width:250px;
-  height:250px;
-  margin:20px auto;
+.scratch-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: auto;
 }
 
-.scratch-container img{
-  width:100%;
-  height:100%;
-  border-radius:15px;
+.scratch-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
-canvas{
-  position:absolute;
-  top:0;
-  left:0;
-  border-radius:15px;
+#scratch {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 </style>
 </head>
@@ -136,10 +136,11 @@ for(let i=0;i<25;i++){
 <!-- PAGE 2 : SCRATCH -->
 <div class="card hidden" id="pageScratch">
   <h2>💚🩷🩵💙Scratch to reveal💚🩷🩵💙</h2>
-  <div class="scratch-container">
-    <img src="DSfam.png">
-    <canvas id="scratch"></canvas>
-  </div>
+<div class="scratch-container">
+  <img src="DSfam.png" id="hiddenImage">
+  <canvas id="scratch"></canvas>
+</div>
+
   <button class="yes hidden" id="continueBtn" onclick="openTyping()">Continue 💕</button>
 </div>
 
@@ -245,6 +246,17 @@ function checkText(){
     error.innerText="😜 Nope! Type it properly baby!";
   }
 }
+ const canvas = document.getElementById("scratch");
+const ctx = canvas.getContext("2d");
+const img = document.getElementById("hiddenImage");
+
+img.onload = () => {
+  canvas.width = img.offsetWidth;
+  canvas.height = img.offsetHeight;
+
+  ctx.fillStyle = "#4a90e2"; // blue scratch layer
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}; 
 </script>
 
 </body>
