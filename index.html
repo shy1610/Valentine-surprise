@@ -7,7 +7,188 @@
 
 <style>
 body{
-  margin:0;
+  margin:0;<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine 💙</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg,#1e3c72,#2a5298);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.card {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 360px;
+  text-align: center;
+  position: absolute;
+}
+
+.hidden { display: none; }
+
+h2 { color:#1e3c72; }
+
+button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  margin: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.yes { background:#ff5fa2; color:white; }
+.no  { background:#ddd; }
+
+.heart {
+  position: fixed;
+  color: pink;
+  font-size: 20px;
+  animation: float 6s linear infinite;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); opacity:1; }
+  to   { transform: translateY(-10vh); opacity:0; }
+}
+
+/* Scratch */
+.scratch-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: auto;
+}
+
+.scratch-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+
+#scratch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div class="card" id="page1">
+  <h2 id="typing"></h2><br>
+  <button class="yes" onclick="openScratch()">Yes</button>
+  <button class="no" id="noBtn">No</button>
+  <p style="margin-top:60px;color:#555;">Don't waste time clicking No 😜</p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="card hidden" id="pageScratch">
+  <h2>Scratch to reveal 💙</h2><br>
+  <div class="scratch-container">
+    <img src="DSfam.png" id="hiddenImage">
+    <canvas id="scratch"></canvas>
+  </div><br>
+  <button class="yes hidden" id="continueBtn" onclick="openTyping()">Continue 💗</button>
+</div>
+
+<script>
+/* Typing effect */
+const text = "Dharshan, will you be my Valentine ? 💖";
+let i = 0;
+const typingEl = document.getElementById("typing");
+
+function typeText(){
+  if(i < text.length){
+    typingEl.innerHTML += text.charAt(i);
+    i++;
+    setTimeout(typeText, 70);
+  }
+}
+typeText();
+
+/* Hearts */
+setInterval(()=>{
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerHTML = "💗";
+  h.style.left = Math.random()*100 + "vw";
+  h.style.fontSize = Math.random()*20 + 15 + "px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),6000);
+},400);
+
+/* No button dodge */
+const noBtn = document.getElementById("noBtn");
+noBtn.onmouseover = () => {
+  noBtn.style.position="absolute";
+  noBtn.style.left=Math.random()*200+"px";
+  noBtn.style.top=Math.random()*200+"px";
+};
+
+/* Navigation */
+function openScratch(){
+  document.getElementById("page1").classList.add("hidden");
+  document.getElementById("pageScratch").classList.remove("hidden");
+  initScratch();
+}
+
+/* Scratch logic */
+function initScratch(){
+  const canvas = document.getElementById("scratch");
+  const ctx = canvas.getContext("2d");
+  const img = document.getElementById("hiddenImage");
+  const btn = document.getElementById("continueBtn");
+
+  img.onload = () => {
+    canvas.width = img.offsetWidth;
+    canvas.height = img.offsetHeight;
+
+    ctx.fillStyle = "#4a90e2";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    canvas.addEventListener("mousemove", scratch);
+    canvas.addEventListener("touchmove", scratch);
+  };
+
+  function scratch(e){
+    const rect = canvas.getBoundingClientRect();
+    const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    const y = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.beginPath();
+    ctx.arc(x,y,20,0,Math.PI*2);
+    ctx.fill();
+
+    btn.classList.remove("hidden");
+  }
+}
+
+function openTyping(){
+  alert("Happy Valentine's Day 💖");
+}
+</script>
+
+</body>
+</html>
+
   height:100vh;
   display:flex;
   align-items:center;
