@@ -17,17 +17,19 @@ body{
   overflow:hidden;
 }
 
-/* Floating hearts */
+/* Floating hearts (DO NOT BLOCK CLICKS) */
 .heart{
-  position:absolute;
+  position:fixed;
   font-size:20px;
-  animation: float 6s linear infinite;
+  animation:float 6s linear infinite;
   opacity:0.7;
+  pointer-events:none;   /* ⭐ FIX */
+  z-index:1;
 }
 
 @keyframes float{
-  0%{transform:translateY(100vh) scale(0.5);}
-  100%{transform:translateY(-10vh) scale(1.2);}
+  from{transform:translateY(100vh) scale(0.5);}
+  to{transform:translateY(-10vh) scale(1.2);}
 }
 
 /* Card */
@@ -40,24 +42,31 @@ body{
   text-align:center;
   box-shadow:0 25px 50px rgba(0,0,0,0.25);
   position:relative;
-  z-index:10;
+  z-index:10;            /* ⭐ FIX */
 }
 
 .hidden{display:none;}
 
 h2{color:#0b5ed7;}
 
+/* Buttons */
 button{
   padding:12px 26px;
   border:none;
   border-radius:25px;
   font-size:16px;
   cursor:pointer;
+  position:relative;
+  z-index:20;            /* ⭐ FIX */
 }
 
 .yes{background:#0b5ed7;color:white;}
-.no{background:#ccc;position:absolute;}
+.no{
+  background:#ccc;
+  position:absolute;
+}
 
+/* Input + text */
 input{
   width:80%;
   padding:12px;
@@ -76,7 +85,7 @@ input{
   white-space:pre-wrap;
 }
 
-/* Scratch card */
+/* Scratch */
 .scratch-container{
   position:relative;
   width:300px;
@@ -88,7 +97,6 @@ input{
   width:100%;
   height:100%;
   object-fit:cover;
-  display:block;
   border-radius:10px;
 }
 
@@ -118,13 +126,13 @@ for(let i=0;i<25;i++){
 
 <!-- PAGE 1 -->
 <div class="card" id="page1">
-  <h2>Dharshan, will you be my Valentine ? 💖</h2><br><br>
+  <h2>Dharshan, will you be my Valentine? 💖</h2><br><br>
   <button class="yes" onclick="openScratch()">Yes</button>
   <button class="no" id="noBtn">No</button>
-  <p style="margin-top:60px;color:#555;">Don't waste your time clicking No 😜</p>
+  <p style="margin-top:60px;color:#555;">No is not an option 😜</p>
 </div>
 
-<!-- PAGE 2 : SCRATCH -->
+<!-- PAGE 2 -->
 <div class="card hidden" id="pageScratch">
   <h2>💚🩷🩵💙 Scratch to reveal 💚🩷🩵💙</h2>
   <div class="scratch-container">
@@ -137,8 +145,8 @@ for(let i=0;i<25;i++){
 <!-- PAGE 3 -->
 <div class="card hidden" id="page2">
   <h2>Hey handsome ❤️</h2>
-  <p>Type <b>i love you pondatti</b> to unlock my surprise 💌</p>
-  <input type="text" id="loveInput">
+  <p>Type <b>i love you pondatti</b></p>
+  <input id="loveInput">
   <br><br>
   <button class="yes" onclick="checkText()">Submit 💕</button>
   <div class="error" id="error"></div>
@@ -151,15 +159,18 @@ for(let i=0;i<25;i++){
 </div>
 
 <script>
-/* No button movement */
+/* No button dodge (inside card only) */
 const noBtn=document.getElementById("noBtn");
-noBtn.addEventListener("mouseover",moveNo);
-noBtn.addEventListener("touchstart",moveNo);
+const card=document.getElementById("page1");
 
 function moveNo(){
-  noBtn.style.left=Math.random()*250+"px";
-  noBtn.style.top=Math.random()*200+"px";
+  const maxX=card.offsetWidth-80;
+  const maxY=card.offsetHeight-80;
+  noBtn.style.left=Math.random()*maxX+"px";
+  noBtn.style.top=Math.random()*maxY+"px";
 }
+noBtn.addEventListener("mouseenter",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
 /* Navigation */
 function openScratch(){
@@ -183,7 +194,6 @@ function initScratch(){
   img.onload=()=>{
     canvas.width=img.offsetWidth;
     canvas.height=img.offsetHeight;
-
     ctx.globalCompositeOperation="source-over";
     ctx.fillStyle="#4a90e2";
     ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -210,7 +220,7 @@ function scratch(e){
   continueBtn.classList.remove("hidden");
 }
 
-/* Love letter */
+/* Love letter typing */
 const letterContent=My love, you’ve been my everything since the day we met.
 I fall in love with you again and again.
 I wish to live my rest of the life with you Thangamey...💚
@@ -223,10 +233,10 @@ You are my forever,
   
 my love, 
 my Dharshan 💚💗💙;
-let idx=0;
+let i=0;
 function typeLetter(){
-  if(idx < letterContent.length){
-    letterText.innerHTML += letterContent[idx++];
+  if(i<letter.length){
+    letterText.innerHTML+=letter[i++];
     setTimeout(typeLetter,40);
   }
 }
@@ -237,7 +247,7 @@ function checkText(){
     page3.classList.remove("hidden");
     typeLetter();
   }else{
-    error.innerText="😜 Nope! Type it properly baby!";
+    error.innerText="😜 Type it properly baby!";
   }
 }
 </script>
